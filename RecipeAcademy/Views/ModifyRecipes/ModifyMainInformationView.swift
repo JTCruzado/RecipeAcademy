@@ -49,6 +49,7 @@ struct ModifyMainInformationView_Previews: PreviewProvider {
     static var previews: some View {
         ModifyMainInformationView(mainInformation: $mainInformation)
         ModifyMainInformationView(mainInformation: $emptyInformation)
+        
     }
     
 }

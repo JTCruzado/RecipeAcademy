@@ -21,7 +21,7 @@ struct RecipeDetailView: View {
         Spacer()
       }
       HStack {
-        Text("Author: \(recipe.mainInformation.description)")
+        Text("Description: \(recipe.mainInformation.description)")
           .font(.subheadline)
           .padding()
         Spacer()

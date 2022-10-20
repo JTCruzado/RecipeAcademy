@@ -19,44 +19,49 @@ protocol ModifyComponentView: View {
 }
 
 struct ModifyComponentsView<Component: RecipeComponent, DestinationView: ModifyComponentView>: View where DestinationView.Component == Component {
-  @Binding var components: [Component]
- 
-  private let listBackgroundColor = AppColor.background
-  private let listTextColor = AppColor.foreground
- 
-  @State private var newComponent = Component()
- 
-  var body: some View {
-    VStack {
-      let addComponentView = DestinationView(component: $newComponent) { component in
-        components.append(component)
-        newComponent = Component()
-      }.navigationTitle("Add \(Component.singularName().capitalized)")
-      if components.isEmpty {
-        Spacer()
-        NavigationLink("Add the first \(Component.singularName())", destination: addComponentView)
-        Spacer()
-      } else {
-        HStack {
-          Text(Component.pluralName().capitalized)
-            .font(.title)
-            .padding()
-          Spacer()
+    @Binding var components: [Component]
+    
+    private let listBackgroundColor = AppColor.background
+    private let listTextColor = AppColor.foreground
+    
+    @State private var newComponent = Component()
+    
+    var body: some View {
+        VStack {
+            let addComponentView = DestinationView(component: $newComponent) { component in
+                components.append(component)
+                newComponent = Component()
+            }.navigationTitle("Add \(Component.singularName().capitalized)")
+            if components.isEmpty {
+                Spacer()
+                NavigationLink("Add the first \(Component.singularName())", destination: addComponentView)
+                Spacer()
+            } else {
+                HStack {
+                      Text(Component.pluralName().capitalized)
+                        .font(.title)
+                        .padding()
+                      Spacer()
+                      EditButton()
+                        .padding()
+                    }
+                List {
+                    ForEach(components.indices, id: \.self) { index in
+                        let component = components[index]
+                        let editComponentView = DestinationView(component: $components[index]) { _ in
+                            return
+                        }
+                            .navigationTitle("Edit" + "\(Component.singularName().capitalized)")
+                        NavigationLink(component.description,
+                                       destination: editComponentView)
+                    }
+                    .onDelete { components.remove(atOffsets: $0) }
+                          .onMove { indices, newOffset in
+                            components.move(fromOffsets: indices, toOffset: newOffset)                    }
+                }
+            }
         }
-        List {
-          ForEach(components.indices, id: \.self) { index in
-            let component = components[index]
-            Text(component.description)
-          }
-          .listRowBackground(listBackgroundColor)
-          NavigationLink("Add another \(Component.singularName())",
-                         destination: addComponentView)
-            .buttonStyle(PlainButtonStyle())
-            .listRowBackground(listBackgroundColor)
-        }.foregroundColor(listTextColor)
-      }
     }
-  }
 }
 
 extension RecipeComponent {
@@ -76,6 +81,6 @@ struct ModifyComponentsView_Previews: PreviewProvider {
         NavigationView {
             ModifyComponentsView<Ingredient, ModifyIngredientView>(components: $recipe.ingredients)
         }
-      }
     }
+}
 

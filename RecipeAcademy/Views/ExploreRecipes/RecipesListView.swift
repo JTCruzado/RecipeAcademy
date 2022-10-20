@@ -20,7 +20,7 @@ struct RecipesListView: View {
     var body: some View {
         List {
             ForEach(recipes) { recipe in
-                NavigationLink(recipe.mainInformation.name, destination: RecipeDetailView(recipe: recipe))
+                NavigationLink(recipe.mainInformation.name, destination: RecipeDetailView(recipe: binding(for:recipe)))
             }
             .listRowBackground(listBackgroundColor)
             .foregroundColor(listTextColor)
@@ -54,28 +54,35 @@ struct RecipesListView: View {
                                 }
                             }
                         }
-                        })
-                        .navigationTitle("Add a New Recipe")
-                    }
-                             })
+                    })
+                    .navigationTitle("Add a New Recipe")
             }
+        })
+    }
+}
+
+
+extension RecipesListView {
+    private var recipes: [Recipe] {
+        recipeData.recipes(for: category)
+    }
+    
+    private var navigationTitle: String {
+        "\(category.rawValue) Recipes"
+    }
+    
+    func binding(for recipe: Recipe) -> Binding<Recipe> {
+        guard let index = recipeData.index(of: recipe) else {
+            fatalError("Recipe not found")
         }
-               
-               
-               extension RecipesListView {
-            private var recipes: [Recipe] {
-                recipeData.recipes(for: category)
-            }
-            
-            private var navigationTitle: String {
-                "\(category.rawValue) Recipes"
-            }
-        }
-               
-               struct RecipesListView_Previews: PreviewProvider {
-            static var previews: some View {
-                NavigationView {
-                    RecipesListView(category: .breakfast)
-                }.environmentObject(RecipeData())
-            }
-        }
+        return $recipeData.recipes[index]
+    }
+}
+
+struct RecipesListView_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationView {
+            RecipesListView(category: .breakfast)
+        }.environmentObject(RecipeData())
+    }
+}

@@ -14,6 +14,7 @@ struct Recipe: Identifiable {
     var mainInformation: MainInformation
     var ingredients: [Ingredient]
     var directions: [Direction]
+    var isFavorite = false
     
     init() {
         self.init(mainInformation: MainInformation(name: "", description: "", author: "", category: .breakfast),
@@ -28,6 +29,12 @@ struct Recipe: Identifiable {
     }
     var isValid: Bool {
         mainInformation.isValid && !ingredients.isEmpty && !directions.isEmpty
+    }
+    
+    func index(of direction: Direction, excludingOptionalDirections: Bool) -> Int? {
+        let directions = directions.filter { excludingOptionalDirections ? !$0.isOptional : true }
+        let index = directions.firstIndex { $0.description == direction.description }
+        return index
     }
 }
 
@@ -121,7 +128,7 @@ extension Recipe {
                 Direction(description: "Drain the now soft potatoes", isOptional: false),
                 Direction(description: "Mix vigorously with milk, salt, and butter", isOptional: false)
                ]
-              ),
+        ),
         Recipe(mainInformation: MainInformation(name: "Beet and Apple Salad",
                                                 description: "Light and refreshing summer salad made of beets, apples and fresh mint",
                                                 author: "Deb Szajngarten",
@@ -144,7 +151,7 @@ extension Recipe {
                 Direction(description: "Chiffonade the mint", isOptional: false),
                 Direction(description: "Combine all ingredients with lemon juice and olive oil and serve", isOptional: false)
                ]
-              ),
+        ),
         Recipe(mainInformation: MainInformation(name: "Braised Beef Brisket",
                                                 description: "Slow cooked brisket in a savory braise that makes an amazing gravy.",
                                                 author: "Deb Szajngarten",
@@ -172,7 +179,7 @@ extension Recipe {
                 Direction(description: "Add the wine mixture, return the beef to the pot, add the chicken stock until it come 1/2 way up the beef", isOptional: false),
                 Direction(description: "Close the lid and bake at 250 until fork tender (4-6 hrs)", isOptional: false)
                ]
-              ),
+        ),
         Recipe(mainInformation: MainInformation(name: "Best Brownies Ever",
                                                 description: "Five simple ingredients make these brownies easy to make and delicious to consume!",
                                                 author: "Pam Broda",
@@ -192,7 +199,7 @@ extension Recipe {
                 Direction(description: "Grease an 8x8 in. pan with butter and pour in brownie mix", isOptional: false),
                 Direction(description: "Bake for 23-25min - DO NOT OVERBAKE", isOptional: false)
                ]
-              ),
+        ),
         Recipe(mainInformation: MainInformation(name: "Omelet and Greens",
                                                 description: "Quick, crafty omelet with greens!",
                                                 author: "Taylor Murray",
@@ -218,7 +225,7 @@ extension Recipe {
                 Direction(description: "Top with parmesan and onions, fold in half", isOptional: true),
                 Direction(description: "In a medium bowl, whisk lemon juice, 2 tbs olive oil, toss with spinach and serve with omelet", isOptional: false)
                ]
-              ),
+        ),
         Recipe(mainInformation: MainInformation(name: "Vegetarian Chili",
                                                 description: "Warm, comforting, and filling vegetarian chili",
                                                 author: "Makeinze Gore",
@@ -249,7 +256,7 @@ extension Recipe {
                 Direction(description: "Bring to a boil then reduce heat and let simmer for 30min", isOptional: false),
                 Direction(description: "Serve with cheese, sour cream, and cilantro", isOptional: true)
                ]
-              ),
+        ),
         Recipe(mainInformation: MainInformation(name: "Classic Shrimp Scampi",
                                                 description: "Simple, delicate shrimp bedded in a delicious set of pasta that will melt your tastebuds!",
                                                 author: "Sarah Taller",
@@ -279,7 +286,7 @@ extension Recipe {
                 Direction(description: "Season with salt, stir in parsley", isOptional: false),
                 Direction(description: "Serve with lemon wedges!", isOptional: true)
                ]
-              ),
+        ),
         Recipe(mainInformation: MainInformation(name: "Chocolate Billionaires",
                                                 description: "Chocolate and caramel candies that are to die for!",
                                                 author: "Jack B",
@@ -306,7 +313,7 @@ extension Recipe {
                 Direction(description: "Allow excess to drip off", isOptional: false),
                 Direction(description: "Place on prepared pans and refrigerate until set", isOptional: false)
                ]
-              ),
+        ),
         Recipe(mainInformation: MainInformation(name: "Mac & Cheese",
                                                 description: "Macaroni & Cheese",
                                                 author: "Travis B",
@@ -334,7 +341,7 @@ extension Recipe {
                 Direction(description: "Drain pasta and stir into cheese mixture.", isOptional: false),
                 Direction(description: "Pour into prepared dish and bake for 35 minutes, or until cheese is bubbly.", isOptional: false),
                ]
-              ),
+        ),
         Recipe(mainInformation: MainInformation(name: "Veggie Soup",
                                                 description: "Classic Vegetable Soup",
                                                 author: "Travis B",
@@ -359,7 +366,7 @@ extension Recipe {
                 Direction(description: "Add broccolli, zucchini, and kidney beans. Bring back to boil and then let simmer for 15 more min", isOptional: false),
                 Direction(description: "Serve with spinach and parmesan cheese", isOptional: true)
                ]
-              ),
+        ),
         Recipe(mainInformation: MainInformation(name: "White Clam Sauce",
                                                 description: "A simple recipe for quick comfort food",
                                                 author: "Henry Minden",
@@ -379,7 +386,7 @@ extension Recipe {
                 Direction(description: "Simmer for 15min until sauce reduces by half", isOptional: false),
                 Direction(description: "Serve over favorite pasta", isOptional: false)
                ]
-              ),
+        ),
         Recipe(mainInformation: MainInformation(name: "Granola Bowl",
                                                 description: "A dense and delicious breakfast",
                                                 author: "Ben",
@@ -394,7 +401,7 @@ extension Recipe {
                 Direction(description: "Combine all ingredients in a bowl", isOptional: false),
                 Direction(description: "Add chocolate chips", isOptional: true),
                ]
-              ),
+        ),
         Recipe(mainInformation: MainInformation(name: "Banana Bread",
                                                 description: "Easy to put together, and a family favorite!",
                                                 author: "Lisbeth",
@@ -416,6 +423,6 @@ extension Recipe {
                 Direction(description: "Stir in chocolate chips", isOptional: false),
                 Direction(description: "Pour in buttered loaf and bake 1 hour or until knife inserted comes out clean", isOptional: false)
                ]
-              )
+        )
     ]
 }

@@ -21,7 +21,7 @@ protocol ModifyComponentView: View {
 struct ModifyComponentsView<Component: RecipeComponent, DestinationView: ModifyComponentView>: View where DestinationView.Component == Component {
     @Binding var components: [Component]
     
-    private let listBackgroundColor = AppColor.background
+    @AppStorage("listBackgroundColor") private var listBackgroundColor = AppColor.background
     private let listTextColor = AppColor.foreground
     
     @State private var newComponent = Component()
@@ -48,17 +48,18 @@ struct ModifyComponentsView<Component: RecipeComponent, DestinationView: ModifyC
                 List {
                     ForEach(components.indices, id: \.self) { index in
                         let component = components[index]
-                        let editComponentView = DestinationView(component: $components[index]) { _ in
-                            return
-                        }
-                            .navigationTitle("Edit" + "\(Component.singularName().capitalized)")
-                        NavigationLink(component.description,
-                                       destination: editComponentView)
+                        let editComponentView = DestinationView(component: $components[index]) { _ in return }
+                            .navigationTitle("Edit \(Component.singularName().capitalized)")
+                        NavigationLink(component.description, destination: editComponentView)
                     }
                     .onDelete { components.remove(atOffsets: $0) }
-                          .onMove { indices, newOffset in
-                            components.move(fromOffsets: indices, toOffset: newOffset)                    }
-                }
+                    .onMove { indices, newOffet in components.move(fromOffsets: indices, toOffset: newOffet) }
+                    .listRowBackground(listBackgroundColor)
+                    NavigationLink("Add another \(Component.singularName())",
+                                   destination: addComponentView)
+                        .buttonStyle(PlainButtonStyle())
+                        .listRowBackground(listBackgroundColor)
+                }.foregroundColor(listTextColor)
             }
         }
     }

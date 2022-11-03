@@ -16,7 +16,7 @@ struct ModifyDirectionView: ModifyComponentView {
         self.createAction = createAction
     }
     
-    private let listBackgroundColor = AppColor.background
+    @AppStorage("listBackgroundColor") private var listBackgroundColor = AppColor.background
     private let listTextColor = AppColor.foreground
     
     @Environment(\.presentationMode) private var mode

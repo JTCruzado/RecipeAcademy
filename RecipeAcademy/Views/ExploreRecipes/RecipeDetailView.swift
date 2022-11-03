@@ -8,13 +8,14 @@ import SwiftUI
 
 struct RecipeDetailView: View {
     @Binding var recipe: Recipe
-    //let recipe: Recipe
+
+    @AppStorage("listBackgroundColor") private var listBackgroundColor = AppColor.background
+    @AppStorage("listTextColor") private var listTextColor = AppColor.foreground
     
-    private let listBackgroundColor = AppColor.background
-    private let listTextColor = AppColor.foreground
-    
+    @AppStorage("hideOptionalDirections") private var hideOptionalDirections: Bool = false
     @State private var isPresenting = false
-    
+    @EnvironmentObject private var recipeData: RecipeData
+
     var body: some View {
         VStack {
             HStack {
@@ -24,8 +25,8 @@ struct RecipeDetailView: View {
                 Spacer()
             }
             HStack {
-                Text("Description: \(recipe.mainInformation.description)")
-                    .font(.subheadline)
+                Text(recipe.mainInformation.description)
+                    .font(.body)
                     .padding()
                 Spacer()
             }
@@ -40,27 +41,35 @@ struct RecipeDetailView: View {
                 Section(header: Text("Directions")) {
                     ForEach(recipe.directions.indices, id: \.self) { index in
                         let direction = recipe.directions[index]
-                        HStack {
-                            Text("\(index + 1). ").bold()
-                            Text("\(direction.isOptional ? "(Optional) " : "")"
-                                 + "\(direction.description)")
-                        }.foregroundColor(listTextColor)
+                        if direction.isOptional && hideOptionalDirections {
+                            EmptyView()
+                        } else {
+                            HStack {
+                                let index = recipe.index(of: direction, excludingOptionalDirections: hideOptionalDirections) ?? 0
+                                Text("\(index + 1). ").bold()
+                                Text("\(direction.isOptional ? "(Optional) " : "")\(direction.description)")
+                            }.foregroundColor(listTextColor)
+                        }
                     }
                 }.listRowBackground(listBackgroundColor)
             }
         }
         .navigationTitle(recipe.mainInformation.name)
-        // add toolbar
         .toolbar {
-            ToolbarItem{
+            ToolbarItem {
                 HStack {
                     Button("Edit") {
                         isPresenting = true
                     }
+                    Button(action: {
+                        recipe.isFavorite.toggle()
+                    }) {
+                        Image(systemName: recipe.isFavorite ? "heart.fill" : "heart")
+                    }
                 }
             }
+            ToolbarItem(placement: .navigationBarLeading) { Text("") }
         }
-        // add styling A sheet that presents ModifyRecipeView when the "Edit" button is tapped
         .sheet(isPresented: $isPresenting) {
             NavigationView {
                 ModifyRecipeView(recipe: $recipe)

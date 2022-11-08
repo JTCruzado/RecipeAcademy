@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-protocol RecipeComponent: CustomStringConvertible {
+protocol RecipeComponent: CustomStringConvertible, Codable {
     init()
     static func singularName() -> String
     static func pluralName() -> String
 }
 
-protocol ModifyComponentView: View {
+protocol ModifyComponentView: View{
     associatedtype Component
     init(component: Binding<Component>, createAction: @escaping (Component) -> Void)
 }
@@ -22,7 +22,7 @@ struct ModifyComponentsView<Component: RecipeComponent, DestinationView: ModifyC
     @Binding var components: [Component]
     
     @AppStorage("listBackgroundColor") private var listBackgroundColor = AppColor.background
-    private let listTextColor = AppColor.foreground
+    @AppStorage("listTextColor") private var listTextColor = AppColor.foreground
     
     @State private var newComponent = Component()
     

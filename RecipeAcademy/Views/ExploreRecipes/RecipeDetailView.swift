@@ -8,14 +8,14 @@ import SwiftUI
 
 struct RecipeDetailView: View {
     @Binding var recipe: Recipe
-
+    
     @AppStorage("listBackgroundColor") private var listBackgroundColor = AppColor.background
     @AppStorage("listTextColor") private var listTextColor = AppColor.foreground
     
     @AppStorage("hideOptionalDirections") private var hideOptionalDirections: Bool = false
     @State private var isPresenting = false
     @EnvironmentObject private var recipeData: RecipeData
-
+    
     var body: some View {
         VStack {
             HStack {
@@ -81,6 +81,8 @@ struct RecipeDetailView: View {
                         }
                     }
                     .navigationTitle("Edit Recipe")
+            }.onDisappear {
+                recipeData.saveRecipes()
             }
         }
     }

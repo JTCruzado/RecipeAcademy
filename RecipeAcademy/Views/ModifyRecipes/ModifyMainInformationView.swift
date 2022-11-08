@@ -10,7 +10,7 @@ import SwiftUI
 
 struct ModifyMainInformationView: View {
     @AppStorage("listBackgroundColor") private var listBackgroundColor = AppColor.background
-    private let listTextColor = AppColor.foreground
+    @AppStorage("listTextColor") private var listTextColor = AppColor.foreground
     
     @Binding var mainInformation: MainInformation
     
@@ -38,6 +38,7 @@ struct ModifyMainInformationView: View {
             .listRowBackground(listBackgroundColor)
             .pickerStyle(MenuPickerStyle())
         }
+        .foregroundColor(listTextColor)
     }
 }
 

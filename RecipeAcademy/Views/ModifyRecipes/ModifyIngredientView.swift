@@ -17,7 +17,7 @@ struct ModifyIngredientView: ModifyComponentView {
     }
     
     @AppStorage("listBackgroundColor") private var listBackgroundColor = AppColor.background
-    private let listTextColor = AppColor.foreground
+    @AppStorage("listTextColor") private var listTextColor = AppColor.foreground
     
     @Environment(\.presentationMode) private var mode
     
